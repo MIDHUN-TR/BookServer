@@ -1,5 +1,6 @@
 const Users = require('../Schema/UserSchema')
 const bcrypt = require('bcrypt')
+const jwt =require('jsonwebtoken')
 
 export const Userreg = async(req,res)=>{
     try{
@@ -27,7 +28,8 @@ export const Userlog = async(req,res)=>{
         const Existing = await Users.findOne({email})
         const compare  = await bcrypt.compare(password,Existing.password)
         if(compare){
-            res.status(200).json(Existing)
+            const token = jwt.sign(userId.Existing._id,process.env.secretKeyForAuth)
+            res.status(200).json({token,Existing})
         }
         else{
             res.status(404).json("Wrong Email and password")
